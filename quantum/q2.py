@@ -377,12 +377,7 @@ def run():
    # policy.load_state_dict(torch.load('../Hybrid.pth'))   #load pre trained weigths
     target.load_state_dict(policy.state_dict())
     target.eval()
-    '''optimizer = torch.optim.Adam([
-        {'params': policy.feature_extractor.parameters(), 'lr': 0.001},
-        {'params': policy.vqcs.parameters(), 'lr': 0.01},  # Increase LR for quantum
-        {'params': policy.fc.parameters(), 'lr': 0.001}
-    ])
-    '''
+ 
     optimizer = optim.Adam(policy.parameters(), lr=0.001)
 
     replay_buffer = ReplayBuffer(REPLAY_BUFFER_SIZE)

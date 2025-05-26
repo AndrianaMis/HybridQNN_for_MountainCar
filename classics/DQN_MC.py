@@ -140,12 +140,12 @@ def run():
 
             
             new_state, reward, terminated, truncated,_=env.step(action)
-           # if abs(new_state[0] - state[0]) < 1e-3:
-            #    reward -= 0.1
+            if abs(new_state[0] - state[0]) < 1e-3:
+                 reward -= 0.1
             previous_distance = abs(state[0] - 0.5)
             current_distance = abs(new_state[0] - 0.5)
             distance_reward = previous_distance - current_distance
-            reward += distance_reward * 0.2  # Scale appropriately
+            reward += distance_reward * 0.3  # Scale appropriately
 
 
             replay_buffer.add((state, action, reward, new_state, terminated))
