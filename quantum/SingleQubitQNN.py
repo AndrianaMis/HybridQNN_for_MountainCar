@@ -151,6 +151,7 @@ def qc(x1,x2,thetas):
     # Encoding inputs (normalize to [-π, π])
     x1 = np.clip(x1, -1, 1) * np.pi
     x2 = np.clip(x2, -1, 1) * np.pi
+    qc.h(0)
     qc.rx(x1, 0)
     qc.ry(x2, 0)
 
@@ -287,7 +288,8 @@ def train(replay_buffer, policy, target, optimizer):
 
     train_end=time.time()
     train_t=train_end-train_start
-  #  print(f"Total train time: {train_t}")
+
+    return loss.item()
 
 
 def run():
@@ -313,6 +315,7 @@ def run():
 
     replay_buffer = ReplayBuffer(REPLAY_BUFFER_SIZE)
     steps_list=[]
+    loss_list=[]
     epsilon=EPSILON_START
     
     rewards_per_episode=[]
@@ -325,6 +328,7 @@ def run():
         rewards=0
         goal_reached=False
         steps=0
+        loss_per_episode=0
         while (not terminated and rewards> MIN_REWARDS):
 
             if np.random.rand() < epsilon:
@@ -344,15 +348,15 @@ def run():
             previous_distance = abs(state[0] - 0.5)
             current_distance = abs(new_state[0] - 0.5)
             distance_reward = previous_distance - current_distance
-            reward += distance_reward * 0.9  # Scale appropriately
+            reward += distance_reward * 0.7  # Scale appropriately
 
 
             replay_buffer.add((state, action, reward, new_state, terminated))
             state=new_state
             rewards+=reward
-
-            train(replay_buffer,policy,target,optimizer)
-     #       print(f"Done first training!!!! training:{training}")
+            l=train(replay_buffer,policy,target,optimizer)
+            if l is not None: loss_per_episode+=l
+   
 
     
             pos,vel=state
@@ -371,7 +375,9 @@ def run():
         if i % TARGET_UPDATE_FREQ == 0:
             target.load_state_dict(policy.state_dict())
 
-        print(f"Episode {i}, Total Reward: {rewards}, Epsilon: {epsilon:.4f}")
+       # print(f"Episode {i}, Total Reward: {rewards}, Epsilon: {epsilon:.4f}")
+        avg_loss=loss_per_episode / steps
+        loss_list.append(avg_loss)
     env.close()
 
     window=10
@@ -395,9 +401,10 @@ def run():
         "success_rate": sucess_rate,
         "steps_list": steps_list,
         "smoothed_rewards": smoothed_rewards_per_episode.tolist(),
-        "parameters": parameters_used
+        "parameters": parameters_used,
+        "losses": loss_list
     }
-    metrics_file="HybridDQN.pkl"
+    metrics_file="HybridDQN_withH.pkl"
     with open(metrics_file, "wb") as f:
         pickle.dump(metrics, f)
     

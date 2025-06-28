@@ -2,7 +2,7 @@ import pickle
 import torch
 import matplotlib.pyplot as plt
 
-with open("classics/DQN_no.pkl", "rb") as f:
+with open("classics/DQN_smallerLR.pkl", "rb") as f:
     training_metrics = pickle.load(f)
 
 
@@ -26,7 +26,7 @@ plt.xlabel("Episodes")
 plt.ylabel("Total Reward")
 plt.title("Agent Learning Curve")
 plt.legend()
-plt.savefig("pngs_for_thesis/classic/LCURVE.png")
+plt.savefig("pngs_for_thesis/LCURVE.png")
 #plt.show()
 
 # Plot success rate
@@ -36,7 +36,7 @@ plt.xlabel("Episodes")
 plt.ylabel("Success Rate")
 plt.title("Agent Success Rate")
 plt.legend()
-plt.savefig("pngs_for_thesis/classic/SR.png")
+plt.savefig("pngs_for_thesis/SR.png")
 #plt.show()
 
 
@@ -46,5 +46,5 @@ plt.xlabel("Episodes")
 plt.ylabel("Steps")
 plt.title("Steps to reach goal")
 plt.legend()
-plt.savefig("pngs_for_thesis/classic/Steps.png")
+plt.savefig("pngs_for_thesis/Steps.png")
 #plt.show()

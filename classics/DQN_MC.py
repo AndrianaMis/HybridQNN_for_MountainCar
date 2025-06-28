@@ -11,7 +11,7 @@ import sys
 # Hyperparameters
 import time
 GAMMA = 0.99
-LEARNING_RATE = 1e-5
+LEARNING_RATE = 1e-4
 BATCH_SIZE = 16
 REPLAY_BUFFER_SIZE = 10000
 EPSILON_START = 1.0
@@ -141,7 +141,7 @@ def run():
             
             new_state, reward, terminated, truncated,_=env.step(action)
             if abs(new_state[0] - state[0]) < 1e-3:
-                 reward -= 0.1
+                reward -= 0.1
             previous_distance = abs(state[0] - 0.5)
             current_distance = abs(new_state[0] - 0.5)
             distance_reward = previous_distance - current_distance
@@ -195,14 +195,14 @@ def run():
         "smoothed_rewards": smoothed_rewards_per_episode.tolist(),
         "parameters": parameters_used
     }
-    metrics_file="DQN_no.pkl"
+    metrics_file="DQN_smallerLR.pkl"
     with open(metrics_file, "wb") as f:
         pickle.dump(metrics, f)
     
     model_file="dqn_weights.pth"
     torch.save(policy.state_dict(),model_file)
 
-
+#DQN_no has now smaller lr and no reward- , DQN smaller will have just the smaller lr
 
 
 
